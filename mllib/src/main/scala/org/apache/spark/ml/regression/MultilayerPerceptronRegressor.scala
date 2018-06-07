@@ -42,7 +42,7 @@ private[regression] trait MultilayerPerceptronParams extends PredictorParams
     *
     * @group param
     */
-  @Since("2.3.0")
+  @Since("2.3.2")
   final val layers: IntArrayParam = new IntArrayParam(this, "layers",
     "Sizes of layers including input and output from bottom to the top." +
       " E.g., Array(780, 100, 10) means 780 inputs, " +
@@ -51,11 +51,11 @@ private[regression] trait MultilayerPerceptronParams extends PredictorParams
   )
 
   /** @group setParam */
-  @Since("2.3.0")
+  @Since("2.3.2")
   def setLayers(value: Array[Int]): this.type = set(layers, value)
 
   /** @group getParam */
-  @Since("2.3.0")
+  @Since("2.3.2")
   final def getLayers: Array[Int] = $(layers)
 
   /**
@@ -218,10 +218,10 @@ private object RegressionLabelConverter {
   * Number of inputs has to be equal to the size of feature vectors.
   * Number of outputs has to be equal to one.
   */
-@Since("2.3.0")
+@Since("2.3.2")
 @Experimental
-class MultilayerPerceptronRegressor @Since("2.3.0")(
-                                                      @Since("2.3.0") override val uid: String)
+class MultilayerPerceptronRegressor @Since("2.3.2") (
+                                                      @Since("2.3.2") override val uid: String)
   extends Predictor[Vector, MultilayerPerceptronRegressor, MultilayerPerceptronRegressorModel]
     with MultilayerPerceptronParams with MultilayerPerceptronRegressorParams with Serializable
     with DefaultParamsWritable {
@@ -231,7 +231,7 @@ class MultilayerPerceptronRegressor @Since("2.3.0")(
     *
     * @group expertSetParam
     */
-  @Since("2.3.0")
+  @Since("2.3.2")
   def setInitialWeights(value: Vector): this.type = set(initialWeights, value)
 
   /**
@@ -240,7 +240,7 @@ class MultilayerPerceptronRegressor @Since("2.3.0")(
     *
     * @group expertSetParam
     */
-  @Since("2.3.0")
+  @Since("2.3.2")
   def setSolver(value: String): this.type = set(solver, value)
 
   /**
@@ -249,10 +249,10 @@ class MultilayerPerceptronRegressor @Since("2.3.0")(
     *
     * @group setParam
     */
-  @Since("2.3.0")
+  @Since("2.3.2")
   def setStepSize(value: Double): this.type = set(stepSize, value)
 
-  @Since("2.3.0")
+  @Since("2.3.2")
   def this() = this(Identifiable.randomUID("mlpr"))
 
   override def copy(extra: ParamMap): MultilayerPerceptronRegressor = defaultCopy(extra)
@@ -311,7 +311,7 @@ class MultilayerPerceptronRegressor @Since("2.3.0")(
 }
 
 
-@Since("2.3.0")
+@Since("2.3.2")
 object MultilayerPerceptronRegressor
   extends DefaultParamsReadable[MultilayerPerceptronRegressor] {
 
@@ -324,7 +324,7 @@ object MultilayerPerceptronRegressor
   /** Set of solvers that MultilayerPerceptronRegressor supports. */
   private[regression] val supportedSolvers = Array(LBFGS, GD)
 
-  @Since("2.3.0")
+  @Since("2.3.2")
   override def load(path: String): MultilayerPerceptronRegressor = super.load(path)
 }
 

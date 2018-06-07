@@ -23,22 +23,42 @@ import breeze.linalg.{sum => Bsum, DenseMatrix => BDM, DenseVector => BDV}
 import breeze.numerics.{log => brzlog}
 
 /**
- * Trait for loss function
- */
+  * Trait for loss function
+  */
 private[ann] trait LossFunction {
   /**
-   * Returns the value of loss function.
-   * Computes loss based on target and output.
-   * Writes delta (error) to delta in place.
-   * Delta is allocated based on the outputSize
-   * of model implementation.
-   *
-   * @param output actual output
-   * @param target target output
-   * @param delta delta (updated in place)
-   * @return loss
-   */
+    * Returns the value of loss function.
+    * Computes loss based on target and output.
+    * Writes delta (error) to delta in place.
+    * Delta is allocated based on the outputSize
+    * of model implementation.
+    *
+    * @param output actual output
+    * @param target target output
+    * @param delta delta (updated in place)
+    * @return loss
+    */
   def loss(output: BDM[Double], target: BDM[Double], delta: BDM[Double]): Double
+}
+
+private[ann] class LinearLayerWithSquaredError extends Layer {
+  override val weightSize = 0
+  override val inPlace = true
+
+  override def getOutputSize(inputSize: Int): Int = inputSize
+  override def createModel(weights: BDV[Double]): LayerModel =
+    new LinearLayerModelWithSquaredError()
+  override def initModel(weights: BDV[Double], random: Random): LayerModel =
+    new LinearLayerModelWithSquaredError()
+}
+
+private[ann] class LinearLayerModelWithSquaredError
+  extends FunctionalLayerModel(new FunctionalLayer(new LinearFunction)) with LossFunction {
+  override def loss(output: BDM[Double], target: BDM[Double], delta: BDM[Double]): Double = {
+    ApplyInPlace(output, target, delta, (o: Double, t: Double) => o - t)
+    val error = Bsum(delta :* delta) / 2 / output.cols
+    error
+  }
 }
 
 private[ann] class SigmoidLayerWithSquaredError extends Layer {
@@ -72,29 +92,6 @@ private[ann] class SoftmaxLayerWithCrossEntropyLoss extends Layer {
   override def initModel(weights: BDV[Double], random: Random): LayerModel =
     new SoftmaxLayerModelWithCrossEntropyLoss()
 }
-
-private[ann] class LinearLayerWithSquaredError extends Layer {
-    override val weightSize = 0
-    override val inPlace = true
-
-      override def getOutputSize(inputSize: Int): Int = inputSize
-    override def createModel(weights: BDV[Double]): LayerModel =
-        new LinearLayerModelWithSquaredError()
-    override def initModel(weights: BDV[Double], random: Random): LayerModel =
-        new LinearLayerModelWithSquaredError()
-  }
-
-
-
-private[ann] class LinearLayerModelWithSquaredError
-  extends FunctionalLayerModel(new FunctionalLayer(new LinearFunction)) with LossFunction {
-  override def loss(output: BDM[Double], target: BDM[Double], delta: BDM[Double]): Double = {
-    ApplyInPlace(output, target, delta, (o: Double, t: Double) => o - t)
-    val error = Bsum(delta :* delta) / 2 / output.cols
-    error
-  }
-}
-
 
 private[ann] class SoftmaxLayerModelWithCrossEntropyLoss extends LayerModel with LossFunction {
 
@@ -130,9 +127,9 @@ private[ann] class SoftmaxLayerModelWithCrossEntropyLoss extends LayerModel with
     }
   }
   override def computePrevDelta(
-    nextDelta: BDM[Double],
-    input: BDM[Double],
-    delta: BDM[Double]): Unit = {
+                                 nextDelta: BDM[Double],
+                                 input: BDM[Double],
+                                 delta: BDM[Double]): Unit = {
     /* loss layer model computes delta in loss function */
   }
 

@@ -21,21 +21,21 @@ import breeze.linalg.{DenseMatrix => BDM, DenseVector => BDV}
 import com.github.fommil.netlib.BLAS.{getInstance => NativeBLAS}
 
 /**
- * In-place DGEMM and DGEMV for Breeze
- */
+  * In-place DGEMM and DGEMV for Breeze
+  */
 private[ann] object BreezeUtil {
 
   // TODO: switch to MLlib BLAS interface
   private def transposeString(A: BDM[Double]): String = if (A.isTranspose) "T" else "N"
 
   /**
-   * DGEMM: C := alpha * A * B + beta * C
-   * @param alpha alpha
-   * @param A A
-   * @param B B
-   * @param beta beta
-   * @param C C
-   */
+    * DGEMM: C := alpha * A * B + beta * C
+    * @param alpha alpha
+    * @param A A
+    * @param B B
+    * @param beta beta
+    * @param C C
+    */
   def dgemm(alpha: Double, A: BDM[Double], B: BDM[Double], beta: Double, C: BDM[Double]): Unit = {
     // TODO: add code if matrices isTranspose!!!
     require(A.cols == B.rows, "A & B Dimension mismatch!")
@@ -47,13 +47,13 @@ private[ann] object BreezeUtil {
   }
 
   /**
-   * DGEMV: y := alpha * A * x + beta * y
-   * @param alpha alpha
-   * @param A A
-   * @param x x
-   * @param beta beta
-   * @param y y
-   */
+    * DGEMV: y := alpha * A * x + beta * y
+    * @param alpha alpha
+    * @param A A
+    * @param x x
+    * @param beta beta
+    * @param y y
+    */
   def dgemv(alpha: Double, A: BDM[Double], x: BDV[Double], beta: Double, y: BDV[Double]): Unit = {
     require(A.cols == x.length, "A & x Dimension mismatch!")
     require(A.rows == y.length, "A & y Dimension mismatch!")
